@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Workout
-from .forms import WorkoutForm
+from .models import Workout, Exercise, WorkoutExercise
+from .forms import WorkoutForm, ExerciseForm, WorkoutExerciseForm
 
 def home(request):
     if request.user.is_authenticated:
@@ -41,12 +41,71 @@ def workout_delete(request, pk):
 @login_required
 def workout_edit(request, pk):
     workout = get_object_or_404(Workout, pk=pk, user=request.user)
+    workout_exercises = workout.workoutexercise_set.all()
+
     if request.method == 'POST':
         form = WorkoutForm(request.POST, instance=workout)
-        if form.is_valid():
+        exercise_form = WorkoutExerciseForm(request.user, request.POST)
+        
+        if 'add_exercise' in request.POST and exercise_form.is_valid():
+            workout_exercise = exercise_form.save(commit=False)
+            workout_exercise.workout = workout
+            workout_exercise.order = workout_exercises.count()
+            workout_exercise.save()
+            messages.success(request, 'Exercise added to workout!')
+            return redirect('workout_edit', pk=pk)
+            
+        elif 'update_workout' in request.POST and form.is_valid():
             form.save()
             messages.success(request, 'Workout updated successfully!')
             return redirect('workout_list')
     else:
         form = WorkoutForm(instance=workout)
-    return render(request, 'workouts/workout_form.html', {'form': form, 'title': 'Edit Workout'}) 
+        exercise_form = WorkoutExerciseForm(request.user)
+    
+    return render(request, 'workouts/workout_form.html', {
+        'form': form,
+        'exercise_form': exercise_form,
+        'workout': workout,
+        'workout_exercises': workout_exercises,
+        'title': 'Edit Workout'
+    })
+
+@login_required
+def exercise_list(request):
+    exercises = Exercise.objects.filter(user=request.user)
+    if request.method == 'POST':
+        form = ExerciseForm(request.POST)
+        if form.is_valid():
+            exercise = form.save(commit=False)
+            exercise.user = request.user
+            exercise.save()
+            messages.success(request, 'Exercise created successfully!')
+            return redirect('exercise_list')
+    else:
+        form = ExerciseForm()
+    return render(request, 'workouts/exercise_list.html', {
+        'exercises': exercises,
+        'form': form
+    })
+
+@login_required
+def workout_detail(request, pk):
+    workout = get_object_or_404(Workout, pk=pk, user=request.user)
+    workout_exercises = workout.workoutexercise_set.all()
+    return render(request, 'workouts/workout_detail.html', {
+        'workout': workout,
+        'workout_exercises': workout_exercises,
+    })
+
+@login_required
+def workout_exercise_delete(request, workout_pk, exercise_pk):
+    workout_exercise = get_object_or_404(
+        WorkoutExercise,
+        workout__pk=workout_pk,
+        pk=exercise_pk,
+        workout__user=request.user
+    )
+    workout_exercise.delete()
+    messages.success(request, 'Exercise removed from workout!')
+    return redirect('workout_detail', pk=workout_pk) 
