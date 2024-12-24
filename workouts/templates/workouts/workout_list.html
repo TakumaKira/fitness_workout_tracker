@@ -1,42 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="workout-list">
-    <div class="header">
-        <h2>My Workouts</h2>
-        <a href="{% url 'workout_create' %}" class="btn btn-primary">Add New Workout</a>
+<div class="max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">My Workouts</h2>
+        <a href="{% url 'workout_create' %}" 
+           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Add New Workout
+        </a>
     </div>
 
     {% if messages %}
         {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            <div class="mb-4 p-4 rounded {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
                 {{ message }}
             </div>
         {% endfor %}
     {% endif %}
 
     {% if workouts %}
-        <div class="workouts">
+        <div class="space-y-4">
             {% for workout in workouts %}
-                <div class="workout-card">
-                    <h3>{{ workout.title }}</h3>
-                    <p class="date">{{ workout.date }}</p>
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-2">{{ workout.title }}</h3>
+                    <p class="text-gray-600 mb-2">{{ workout.date }}</p>
                     {% if workout.description %}
-                        <p class="description">{{ workout.description }}</p>
+                        <p class="text-gray-700 mb-4">{{ workout.description }}</p>
                     {% endif %}
-                    <div class="workout-actions">
-                        <a href="{% url 'workout_detail' workout.pk %}" class="btn btn-primary">View Details</a>
-                        <a href="{% url 'workout_edit' workout.pk %}" class="btn btn-secondary">Edit</a>
-                        <form method="post" action="{% url 'workout_delete' workout.pk %}" style="display: inline;">
+                    <div class="flex space-x-4">
+                        <a href="{% url 'workout_detail' workout.pk %}" 
+                           class="text-blue-500 hover:text-blue-700">View Details</a>
+                        <a href="{% url 'workout_edit' workout.pk %}" 
+                           class="text-gray-500 hover:text-gray-700">Edit</a>
+                        <form method="post" action="{% url 'workout_delete' workout.pk %}" class="inline">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                            <button type="submit" 
+                                    onclick="return confirm('Are you sure?')"
+                                    class="text-red-500 hover:text-red-700">
+                                Delete
+                            </button>
                         </form>
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <p class="no-workouts">No workouts yet. Start by adding one!</p>
+        <p class="text-gray-500">No workouts yet. Start by adding one!</p>
     {% endif %}
 </div>
 {% endblock %} 
