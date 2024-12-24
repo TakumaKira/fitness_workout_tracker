@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "build": "tailwindcss -i ./static/src/input.css -o ./static/css/output.css --watch",
+    "build:prod": "tailwindcss -i ./static/src/input.css -o ./static/css/output.css --minify"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

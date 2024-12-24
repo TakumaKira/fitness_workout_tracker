@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="home">
+    <h1>Welcome to Workout Tracker</h1>
+    {% if user.is_authenticated %}
+        {% if workouts %}
+            <div class="recent-workouts">
+                <h2>Recent Workouts</h2>
+                {% for workout in workouts %}
+                    <div class="workout-card">
+                        <h3>{{ workout.title }}</h3>
+                        <p class="date">{{ workout.date }}</p>
+                    </div>
+                {% endfor %}
+                <a href="{% url 'workout_list' %}" class="btn btn-primary">View All Workouts</a>
+            </div>
+        {% else %}
+            <p>No workouts yet. <a href="{% url 'workout_create' %}">Create your first workout!</a></p>
+        {% endif %}
+    {% else %}
+        <p>Please <a href="{% url 'login' %}">login</a> to track your workouts.</p>
+    {% endif %}
+</div>
+{% endblock %} 
