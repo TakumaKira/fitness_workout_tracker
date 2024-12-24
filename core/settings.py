@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,9 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4)87_m$rvgf&f@3)%$**7)-!w8avnfy#7_d15o3j$u$5z*v(*9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = []
+if DEBUG:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -129,3 +132,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
+
+# Security settings
+SECURE_SSL_REDIRECT = True  # Redirects all non-HTTPS requests to HTTPS
+SESSION_COOKIE_SECURE = True  # Only sends cookie over HTTPS
+CSRF_COOKIE_SECURE = True  # Only sends CSRF cookie over HTTPS
+SECURE_BROWSER_XSS_FILTER = True  # Enables XSS filtering
+SECURE_HSTS_SECONDS = 31536000  # Enables HSTS for 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Includes subdomains in HSTS
+SECURE_HSTS_PRELOAD = True  # Allows preloading of HSTS
+SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript access to session cookie
+CSRF_COOKIE_HTTPONLY = True  # Prevents JavaScript access to CSRF cookie
+
+# In development, you might want to disable these:
+if DEBUG:
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SECURE_HSTS_SECONDS = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
