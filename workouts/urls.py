@@ -11,4 +11,6 @@ urlpatterns = [
     path('exercises/', views.exercise_list, name='exercise_list'),
     path('workouts/<int:workout_pk>/exercises/<int:exercise_pk>/delete/',
          views.workout_exercise_delete, name='workout_exercise_delete'),
+    path('workouts/<int:workout_pk>/comments/create/', 
+         views.comment_create, name='comment_create'),
 ] 

@@ -29,6 +29,34 @@
         {% endif %}
     </div>
 
+    <div class="comments-section">
+        <h3>Comments</h3>
+        
+        <form method="post" action="{% url 'comment_create' workout.pk %}" class="comment-form">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        </form>
+
+        {% if comments %}
+            <div class="comments-list">
+                {% for comment in comments %}
+                    <div class="comment">
+                        <p class="comment-text">{{ comment.text }}</p>
+                        <p class="comment-meta">
+                            By {{ comment.user.username }} on {{ comment.created_at|date:"M d, Y H:i" }}
+                            {% if comment.updated_at > comment.created_at %}
+                                (edited)
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No comments yet.</p>
+        {% endif %}
+    </div>
+
     <div class="actions">
         <a href="{% url 'workout_edit' workout.pk %}" class="btn btn-primary">Edit Workout</a>
         <a href="{% url 'workout_list' %}" class="btn btn-secondary">Back to Workouts</a>
