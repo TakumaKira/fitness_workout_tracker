@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Workout, Exercise, WorkoutExercise
-from .forms import WorkoutForm, ExerciseForm, WorkoutExerciseForm
+from .models import Workout, Exercise, WorkoutExercise, Comment
+from .forms import WorkoutForm, ExerciseForm, WorkoutExerciseForm, CommentForm
 
 def home(request):
     if request.user.is_authenticated:
@@ -93,9 +93,25 @@ def exercise_list(request):
 def workout_detail(request, pk):
     workout = get_object_or_404(Workout, pk=pk, user=request.user)
     workout_exercises = workout.workoutexercise_set.all()
+    comments = workout.comments.all()
+
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.workout = workout
+            comment.user = request.user
+            comment.save()
+            messages.success(request, 'Comment added successfully!')
+            return redirect('workout_detail', pk=pk)
+    else:
+        comment_form = CommentForm()
+
     return render(request, 'workouts/workout_detail.html', {
         'workout': workout,
         'workout_exercises': workout_exercises,
+        'comments': comments,
+        'comment_form': comment_form,
     })
 
 @login_required

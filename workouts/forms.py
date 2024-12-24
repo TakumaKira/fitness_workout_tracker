@@ -1,5 +1,5 @@
 from django import forms
-from .models import Workout, Exercise, WorkoutExercise
+from .models import Workout, Exercise, WorkoutExercise, Comment
 
 class WorkoutForm(forms.ModelForm):
     class Meta:
@@ -26,3 +26,11 @@ class WorkoutExerciseForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['exercise'].queryset = Exercise.objects.filter(user=user) 
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
+        widgets = {
+            'text': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Add a comment...'}),
+        } 
