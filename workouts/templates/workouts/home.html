@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="home">
+    <h1>Welcome to Workout Tracker</h1>
+    {% if user.is_authenticated %}
+        <p>Start tracking your workouts!</p>
+    {% else %}
+        <p>Please <a href="{% url 'login' %}">login</a> to track your workouts.</p>
+    {% endif %}
+</div>
+{% endblock %} 
