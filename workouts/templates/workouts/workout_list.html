@@ -25,6 +25,7 @@
                         <p class="description">{{ workout.description }}</p>
                     {% endif %}
                     <div class="workout-actions">
+                        <a href="{% url 'workout_edit' workout.pk %}" class="btn btn-secondary">Edit</a>
                         <form method="post" action="{% url 'workout_delete' workout.pk %}" style="display: inline;">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this workout?')">Delete</button>

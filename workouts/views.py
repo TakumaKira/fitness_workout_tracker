@@ -37,3 +37,16 @@ def workout_delete(request, pk):
         messages.success(request, 'Workout deleted successfully!')
         return redirect('workout_list')
     return render(request, 'workouts/workout_confirm_delete.html', {'workout': workout}) 
+
+@login_required
+def workout_edit(request, pk):
+    workout = get_object_or_404(Workout, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = WorkoutForm(request.POST, instance=workout)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Workout updated successfully!')
+            return redirect('workout_list')
+    else:
+        form = WorkoutForm(instance=workout)
+    return render(request, 'workouts/workout_form.html', {'form': form, 'title': 'Edit Workout'}) 
