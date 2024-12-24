@@ -28,3 +28,12 @@ def workout_create(request):
     else:
         form = WorkoutForm()
     return render(request, 'workouts/workout_form.html', {'form': form, 'title': 'Create Workout'}) 
+
+@login_required
+def workout_delete(request, pk):
+    workout = get_object_or_404(Workout, pk=pk, user=request.user)
+    if request.method == 'POST':
+        workout.delete()
+        messages.success(request, 'Workout deleted successfully!')
+        return redirect('workout_list')
+    return render(request, 'workouts/workout_confirm_delete.html', {'workout': workout}) 

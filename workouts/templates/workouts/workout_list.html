@@ -24,6 +24,12 @@
                     {% if workout.description %}
                         <p class="description">{{ workout.description }}</p>
                     {% endif %}
+                    <div class="workout-actions">
+                        <form method="post" action="{% url 'workout_delete' workout.pk %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this workout?')">Delete</button>
+                        </form>
+                    </div>
                 </div>
             {% endfor %}
         </div>
