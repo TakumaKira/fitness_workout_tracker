@@ -25,3 +25,7 @@ npx tailwindcss -i ./static/src/input.css
 Then you can login as superuser or create a new user on screen.
 
 For security checks, run `DJANGO_DEBUG=false python manage.py check --deploy`
+
+Run development server with `python manage.py runserver`
+
+Run production server with `gunicorn myproject.wsgi`
