@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="workout-detail">
+    <h2>{{ workout.title }}</h2>
+    <p class="date">{{ workout.date }}</p>
+    {% if workout.description %}
+        <p class="description">{{ workout.description }}</p>
+    {% endif %}
+
+    <div class="workout-exercises">
+        <h3>Exercises</h3>
+        {% if workout_exercises %}
+            {% for we in workout_exercises %}
+                <div class="exercise-item">
+                    <h4>{{ we.exercise.name }}</h4>
+                    <p>Sets: {{ we.sets }} | Reps: {{ we.reps }}
+                    {% if we.weight %}
+                        | Weight: {{ we.weight }}kg
+                    {% endif %}
+                    </p>
+                    {% if we.notes %}
+                        <p class="notes">{{ we.notes }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No exercises added yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="actions">
+        <a href="{% url 'workout_edit' workout.pk %}" class="btn btn-primary">Edit Workout</a>
+        <a href="{% url 'workout_list' %}" class="btn btn-secondary">Back to Workouts</a>
+    </div>
+</div>
+{% endblock %} 

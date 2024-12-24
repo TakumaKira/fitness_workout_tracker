@@ -17,8 +17,43 @@
                 {% endif %}
             </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary">Save Workout</button>
+        <button type="submit" name="update_workout" class="btn btn-primary">Save Workout</button>
         <a href="{% url 'workout_list' %}" class="btn btn-secondary">Cancel</a>
     </form>
+
+    {% if workout %}
+        <div class="workout-exercises">
+            <h3>Exercises</h3>
+            {% if workout_exercises %}
+                {% for we in workout_exercises %}
+                    <div class="exercise-item">
+                        <h4>{{ we.exercise.name }}</h4>
+                        <p>Sets: {{ we.sets }} | Reps: {{ we.reps }}
+                        {% if we.weight %}
+                            | Weight: {{ we.weight }}kg
+                        {% endif %}
+                        </p>
+                        {% if we.notes %}
+                            <p class="notes">{{ we.notes }}</p>
+                        {% endif %}
+                        <form method="post" action="{% url 'workout_exercise_delete' workout.pk we.pk %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No exercises added yet.</p>
+            {% endif %}
+
+            <form method="post" class="add-exercise-form">
+                {% csrf_token %}
+                <h4>Add Exercise</h4>
+                {{ exercise_form.as_p }}
+                <button type="submit" name="add_exercise" class="btn btn-primary">Add to Workout</button>
+                <a href="{% url 'exercise_list' %}" class="btn btn-secondary">Manage Exercises</a>
+            </form>
+        </div>
+    {% endif %}
 </div>
 {% endblock %} 
