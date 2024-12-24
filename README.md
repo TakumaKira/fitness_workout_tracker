@@ -1,4 +1,4 @@
-# Fitness Workout Tracker API
+# Fitness Workout Tracker
 
 This is a challenge from [here](https://roadmap.sh/backend/project-ideas#9-fitness-workout-tracker).
 
@@ -18,10 +18,14 @@ npm install
 # Run this during development
 npm run build
 
-# For production, run:
-npx tailwindcss -i ./static/src/input.css
+# Build the CSS for production
+npm run build:prod
 ```
 
 Then you can login as superuser or create a new user on screen.
 
 For security checks, run `DJANGO_DEBUG=false python manage.py check --deploy`
+
+Run development server with `python manage.py runserver`
+
+Run production server with `gunicorn core.wsgi`
