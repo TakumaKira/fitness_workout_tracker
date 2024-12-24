@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="workout-list">
+    <div class="header">
+        <h2>My Workouts</h2>
+        <a href="{% url 'workout_create' %}" class="btn btn-primary">Add New Workout</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if workouts %}
+        <div class="workouts">
+            {% for workout in workouts %}
+                <div class="workout-card">
+                    <h3>{{ workout.title }}</h3>
+                    <p class="date">{{ workout.date }}</p>
+                    {% if workout.description %}
+                        <p class="description">{{ workout.description }}</p>
+                    {% endif %}
+                    <div class="workout-actions">
+                        <a href="{% url 'workout_edit' workout.pk %}" class="btn btn-secondary">Edit</a>
+                        <form method="post" action="{% url 'workout_delete' workout.pk %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this workout?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-workouts">No workouts yet. Start by adding one!</p>
+    {% endif %}
+</div>
+{% endblock %} 
