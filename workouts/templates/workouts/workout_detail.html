@@ -32,7 +32,7 @@
     <div class="comments-section">
         <h3>Comments</h3>
         
-        <form method="post" class="comment-form">
+        <form method="post" action="{% url 'comment_create' workout.pk %}" class="comment-form">
             {% csrf_token %}
             {{ comment_form.as_p }}
             <button type="submit" class="btn btn-primary">Add Comment</button>

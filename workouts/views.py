@@ -94,25 +94,31 @@ def workout_detail(request, pk):
     workout = get_object_or_404(Workout, pk=pk, user=request.user)
     workout_exercises = workout.workoutexercise_set.all()
     comments = workout.comments.all()
-
-    if request.method == 'POST':
-        comment_form = CommentForm(request.POST)
-        if comment_form.is_valid():
-            comment = comment_form.save(commit=False)
-            comment.workout = workout
-            comment.user = request.user
-            comment.save()
-            messages.success(request, 'Comment added successfully!')
-            return redirect('workout_detail', pk=pk)
-    else:
-        comment_form = CommentForm()
-
+    comment_form = CommentForm()
+    
     return render(request, 'workouts/workout_detail.html', {
         'workout': workout,
         'workout_exercises': workout_exercises,
         'comments': comments,
         'comment_form': comment_form,
     })
+
+@login_required
+def comment_create(request, workout_pk):
+    workout = get_object_or_404(Workout, pk=workout_pk, user=request.user)
+    
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.workout = workout
+            comment.user = request.user
+            comment.save()
+            messages.success(request, 'Comment added successfully!')
+    else:
+        messages.error(request, 'Invalid request method')
+    
+    return redirect('workout_detail', pk=workout_pk)
 
 @login_required
 def workout_exercise_delete(request, workout_pk, exercise_pk):
