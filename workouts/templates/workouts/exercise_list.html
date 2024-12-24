@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="exercise-list">
+    <h2>My Exercises</h2>
+    
+    <form method="post" class="exercise-form">
+        {% csrf_token %}
+        <h3>Add New Exercise</h3>
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Add Exercise</button>
+    </form>
+
+    {% if exercises %}
+        <div class="exercises">
+            {% for exercise in exercises %}
+                <div class="exercise-card">
+                    <h3>{{ exercise.name }}</h3>
+                    {% if exercise.description %}
+                        <p>{{ exercise.description }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No exercises yet. Add your first exercise above!</p>
+    {% endif %}
+</div>
+{% endblock %} 
